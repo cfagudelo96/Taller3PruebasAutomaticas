@@ -9,9 +9,6 @@ function loadScript(callback) {
   document.body.appendChild(s);
 }
 
-//  formFillerGremlin.canFillElement(function(element) { return true }); // to limit where the gremlin can fill
-
-
 function unleashGremlins(ttl, callback) {
   function stop() {
     horde.stop();
