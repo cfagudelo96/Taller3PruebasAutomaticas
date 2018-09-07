@@ -18,12 +18,12 @@ function randomClick(monkeysLeft) {
     if(monkeysLeft > 0) {
         cy.get('a').then($links => {
             var randomLink = $links.get(getRandomInt(0, $links.length - 1));
-            console.log(!Cypress.dom.isHidden(randomLink));
             if(!Cypress.dom.isHidden(randomLink)) {
                 cy.wrap(randomLink).click({force: true});
                 monkeysLeft = monkeysLeft - 1;
             }
-            setTimeout(randomClick, 1000, monkeysLeft);
+            cy.wait(1000);
+            randomClick(monkeysLeft);
         });
     }   
 }
@@ -33,7 +33,9 @@ function randomEvent(monkeysLeft) {
     var monkeysLeft = monkeysLeft;
     
     if (monkeysLeft > 0) {
+        console.log('eeeentra')
         var command = commands[getRandomInt(0, commands.length - 1)];
+        console.log(command);
         if (command === 'clickLink') {
             cy.get('a').then($links => {
                 var randomLink = $links.get(getRandomInt(0, $links.length - 1));
@@ -41,7 +43,8 @@ function randomEvent(monkeysLeft) {
                     cy.wrap(randomLink).click({force: true});
                     monkeysLeft = monkeysLeft - 1;
                 }
-                setTimeout(randomEvent, 1000, monkeysLeft);
+                cy.wait(1000);
+                randomEvent(monkeysLeft);
             });
         } else if (command === 'writeInput') {
             cy.get('input').then($inputs => {
@@ -50,18 +53,22 @@ function randomEvent(monkeysLeft) {
                     cy.wrap(randomInput).type('Test de cf.agudelo12');
                     monkeysLeft = monkeysLeft - 1;
                 }
-                setTimeout(randomEvent, 1000, monkeysLeft);
+                cy.wait(1000);
+                randomEvent(monkeysLeft);
             });
         } else if (command === 'select') {
-            var randomSelect = $selects.get(getRandomInt(0, $selects.length - 1));
-            if (randomSelect && randomSelect.id && !Cypress.dom.isHidden(randomSelect)) {
-                cy.get(`#${randomSelect.id} option`).then($options => {
-                    var randomOption = $options.get(getRandomInt(0, $options.length - 1));
-                    cy.wrap(randomSelect).select(randomOption.value)
-                    monkeysLeft = monkeysLeft - 1;
-                });
-            }
-            setTimeout(randomEvent, 1500, monkeysLeft);
+            cy.get('select').then($selects => {
+                var randomSelect = $selects.get(getRandomInt(0, $selects.length - 1));
+                if (randomSelect && randomSelect.id && !Cypress.dom.isHidden(randomSelect)) {
+                    cy.get(`#${randomSelect.id} option`).then($options => {
+                        var randomOption = $options.get(getRandomInt(0, $options.length - 1));
+                        cy.wrap(randomSelect).select(randomOption.value)
+                        monkeysLeft = monkeysLeft - 1;
+                        cy.wait(1000);
+                        randomEvent(monkeysLeft);
+                    });
+                }
+            });
         } else if (command === 'clickButton') {
             cy.get('button').then($buttons => {
                 var randomButton = $buttons.get(getRandomInt(0, $buttons.length - 1));
@@ -69,7 +76,8 @@ function randomEvent(monkeysLeft) {
                     cy.wrap(randomButton).click({force: true});
                     monkeysLeft = monkeysLeft - 1;
                 }
-                setTimeout(randomEvent, 1000, monkeysLeft);
+                cy.wait(1000);
+                randomEvent(monkeysLeft);
             });
         }
     }
